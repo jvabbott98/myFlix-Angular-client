@@ -25,6 +25,17 @@ export class FetchApiDataService {
     );
   }
 
+  public userLogin(userDetails: any): Observable<any> {
+    console.log(userDetails);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(apiUrl + 'login', userDetails, { headers }).pipe(
+    catchError(this.handleError)
+    );
+  }
+
+
 private handleError(error: HttpErrorResponse): Observable<never> {
     if (error.error instanceof ErrorEvent) {
     console.error('Some error occurred:', error.error.message);
