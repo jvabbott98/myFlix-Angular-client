@@ -1,0 +1,14 @@
+.user-profile-card {
+    max-width: 600px;
+    margin: 20px auto;
+  }
+
+  mat-grid-tile {
+    text-align: left;
+    padding: 10px;
+  }
+  
+  mat-card-actions {
+    justify-content: flex-end;
+  }
+  

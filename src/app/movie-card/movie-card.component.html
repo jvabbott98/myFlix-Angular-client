@@ -1,0 +1,29 @@
+<mat-toolbar color="primary">
+    <span>Movie Database</span>
+    <span class="spacer"></span>
+    <a mat-button routerLink="/profile">User Profile</a>
+  </mat-toolbar>
+  
+  <div style="display: flex; flex-direction: column;">
+    <div style="display: flex; flex-wrap: wrap;">
+      <mat-card *ngFor="let movie of movies;" style="flex: 1 1 auto; margin: 10px;">
+        <mat-card-header>
+          <mat-card-title>{{movie.title}}</mat-card-title>
+          <mat-card-subtitle>Directed by: {{movie.director.name}}</mat-card-subtitle>
+        </mat-card-header>
+        <img src={{movie.imageUrl}} alt={{movie.title}} />
+        <mat-card-actions>
+          <button mat-button color="primary" (click)="showGenreDialog(movie)">Genre</button>
+          <button mat-button color="primary" (click)="showDirectorDialog(movie)">Director</button>
+          <button mat-button color="primary" (click)="showMovieSynopsisDialog(movie)">Synopsis</button>
+          <mat-icon 
+            [style.color]="isFavorited(movie._id) ? 'purple' : 'grey'"
+            (click)="!isUpdatingFavorites && toggleFavorite(movie)"
+          >
+            favorite
+          </mat-icon>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+  
