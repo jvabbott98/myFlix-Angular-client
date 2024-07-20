@@ -1,21 +1,63 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, OnInit } from '@angular/core';
+import { FetchApiDataService } from '../fetch-api-data.service';
+import { MatDialog } from '@angular/material/dialog';
+import { EditProfileDialogComponent } from '../edit-profile-dialog/edit-profile-dialog.component';
 
-import { UserProfileComponent } from './user-profile.component';
+/**
+ * The UserProfileComponent displays the user's profile information and allows editing.
+ */
+@Component({
+  selector: 'app-user-profile',
+  templateUrl: './user-profile.component.html',
+  styleUrls: ['./user-profile.component.scss']
+})
+export class UserProfileComponent implements OnInit {
+  /**
+   * The user object containing user details.
+   */
+  user: any = {};
 
-describe('UserProfileComponent', () => {
-  let component: UserProfileComponent;
-  let fixture: ComponentFixture<UserProfileComponent>;
+  /**
+   * Constructor to inject dependencies.
+   * @param fetchApiData The service to fetch API data
+   * @param dialog The MatDialog instance for opening dialogs
+   */
+  constructor(
+    public fetchApiData: FetchApiDataService,
+    public dialog: MatDialog
+  ) {}
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      declarations: [UserProfileComponent]
+  /**
+   * Angular's OnInit lifecycle hook.
+   * Called after the component's view has been fully initialized.
+   */
+  ngOnInit(): void {
+    this.getUser();
+  }
+
+  /**
+   * Retrieves the user details from the backend.
+   */
+  getUser(): void {
+    this.fetchApiData.getUser(JSON.parse(localStorage.getItem('user') || '{}').username).subscribe((resp: any) => {
+      this.user = resp;
+      localStorage.setItem('user', JSON.stringify(this.user));
     });
-    fixture = TestBed.createComponent(UserProfileComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  }
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  /**
+   * Opens the dialog to edit the user's profile information.
+   */
+  openEditProfileDialog(): void {
+    const dialogRef = this.dialog.open(EditProfileDialogComponent, {
+      width: '400px',
+      data: { username: this.user.username, email: this.user.email, birthday: this.user.birthday }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.user = result;
+      }
+    });
+  }
+}
